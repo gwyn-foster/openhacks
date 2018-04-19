@@ -1,0 +1,123 @@
+<html>
+        <link href="stylesheet.css" rel="stylesheet" type="text/css" media="all">   
+        <title> Individual Leaderboard </title>   
+        <h1> Indivudal Leaderboard </h1>
+
+        <table class="leaderboard" id="leaderboard" border="1" style="display: none">
+                <tr>
+                        <td> <h3> &nbsp </h3></td>
+                        <td> <h3> Name </h3></td>
+                        <td> <h3> Score  </h3> </td>
+                            
+                </tr>
+        </table>
+        <button onclick="signIn()"> Sign In </button>
+        <script src="https://statics.teams.microsoft.com/sdk/v1.0/js/MicrosoftTeams.min.js"></script>
+        <script type="text/javascript">
+    //const msteams-client = require(msteams-client) 
+    function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = [].slice.call(new Uint8Array(buffer));
+
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+
+        return window.btoa(binary);
+};
+        function signIn(){
+                microsoftTeams.authentication.authenticate({
+                url: "/assets/auth.html",
+                width: 600,
+                height: 600,
+                successCallback: function(t) {
+                // Note: token is only good for one hour
+                        token = t;
+                        getData(token);
+                        var table = document.getElementById('leaderboard')
+                        table.style.display="block";
+                },
+                failureCallback: function(err) {
+                        //document.getElementById("auth").innerText("Failed to get authenticate and get token.");
+                        //Display error
+                }
+                });   
+        }
+
+    microsoftTeams.initialize();
+    var token = null;
+
+    //var token = "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEWDhHQ2k2SnM2U0s4MlRzRDJQYjdybHRCX201Q0VONFJ6dU56WktoTTJaSGJfYVFrT0MwYmxFSXp5YWk1TjlzM25HY3BBSGJSWUo2TjFHQlh2QnhmYmpOWHhHYVFsU1JEaFV5WUhyN3lXT3lBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiRlNpbXVGckZOb0Mwc0pYR212MTNuTlpjZURjIiwia2lkIjoiRlNpbXVGckZOb0Mwc0pYR212MTNuTlpjZURjIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8wY2Q0MTU4ZS1kMGNhLTQ4N2EtOTQ2OC0xOTE5MTgxZTM3ZDAvIiwiaWF0IjoxNTI0MTYzNzk1LCJuYmYiOjE1MjQxNjM3OTUsImV4cCI6MTUyNDE2NzY5NSwiYWNyIjoiMSIsImFpbyI6IlkyZGdZSGowT2R2QllHYlZ3dnQzTFcrcm5QTU5VWkZmeGNqNlcyTkI3ckg1dmxMNWg5UUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IlRlYW0gRHJlYW0gQm90IFlMIiwiYXBwaWQiOiIxODkzNGNjNS04MjhmLTQ3OTYtOGEyNi02YWFkY2ViNmNjMjgiLCJhcHBpZGFjciI6IjEiLCJmYW1pbHlfbmFtZSI6IkxpdSIsImdpdmVuX25hbWUiOiJZdWJpbmciLCJpcGFkZHIiOiIxODQuOTQuMzYuODciLCJuYW1lIjoiWXViaW5nICBMaXUiLCJvaWQiOiI4MDFmYmY1MS1mNDcyLTQ2M2UtYTBhOC1jYWU2N2Y4OTAwOGIiLCJwbGF0ZiI6IjEiLCJwdWlkIjoiMTAwMzAwMDBBQTc3MjUwNCIsInNjcCI6IlVzZXIuUmVhZCBVc2VyLlJlYWRCYXNpYy5BbGwiLCJzdWIiOiJlaENGN0w5MkdMUXQxc0ZubXQ0ak9mZ0hpVEhnMVF4cWZjV3FVRkEza040IiwidGlkIjoiMGNkNDE1OGUtZDBjYS00ODdhLTk0NjgtMTkxOTE4MWUzN2QwIiwidW5pcXVlX25hbWUiOiJ5dWJpbmdAbXNvcGVuaGFjay5jb20iLCJ1cG4iOiJ5dWJpbmdAbXNvcGVuaGFjay5jb20iLCJ1dGkiOiJOUlBtVFpjVEVrbTZXV0tZLXJVWkFBIiwidmVyIjoiMS4wIn0.CfHon_E4EylEDSDKCZCBzC9iqDYsAAXLyAUPGKBpx3FW6I1ozjGuyjR66cXvJpkJWxVyXf0-jlbi1HpnUCx6wE2wwrdgxM-2rQrcCPFdxDZ23U_Xu8eiJvM5HNluFEHQqoddTRwr4C-rlImKdXh7uvFOZZU6UUMnzXa5gvvQBeioYyCXUZyjjiSFSJ6BS2m2eayewlu2qqN5du2lLWbOomFbw1CdIZDr7cXnRB47AArNyGkc7lTTPnvpSuhQcv_YWPgXHoNsKvFnhwP0Ld9R2VO6enEIb469fESt-qf5mFAFreXHiCfMofHE2dTZ1ducMm6hWqTTrc41w8cfIgYSzQ";
+    function getData (token) {
+        context = microsoftTeams.getContext(function (context) {
+        console.log(context);
+
+        var requestObject = {
+            "teamId": context.teamId,
+            "channelId": context.channelId,
+            "locale": context.locale,
+            "theme": context.theme,
+            "entityId": context.entityId,
+            "subEntityId": context.subEntityId,
+            "upn": context.upn,
+            "tid": context.teamId,
+            "groupId": context.groupId
+        }
+
+        // Loading the jQuery code
+        var url = 'https://msopenhack.azurewebsites.net/api/trivia/leaderboard/user';
+        var picUrl = 'https://graph.microsoft.com/v1.0/users/a7725172-4b35-4b08-bc89-a4d68c4678c5/photo/$value'
+        fetch(url, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(requestObject)
+        })
+         .then(function (response) {
+            response.text().then(function (responseText) {
+                console.log(responseText);
+                
+                var responseObject = JSON.parse(responseText)
+                var i = 1;
+                
+                responseObject.map(x=>{
+                        var node = document.createElement("tr");
+
+                        var tempId = x.id;
+                        var photoUrl = 'https://graph.microsoft.com/v1.0/users/'+tempId+'/photos/48x48/$value';
+
+                        console.log(photoUrl)
+                        node.innerHTML = "<tr><td> <img id=" +tempId +" src=''> &nbsp </td> <td> " + x.name + " </td><td class='score'> " + x.score + "</td></tr>"
+                        document.getElementById("leaderboard").appendChild(node)
+
+                        fetch(photoUrl, {
+                                headers: {
+                                        'Authorization': 'Bearer ' + token,
+                                        'Content-Type': 'image/jpg'
+                                },
+                                method: 'GET' }
+                        ).then(x=>{
+                               
+                                x.arrayBuffer().then((buffer) => {
+                                        var base64Flag = 'data:image/jpeg;base64,';
+                                        var imageStr = arrayBufferToBase64(buffer);
+
+                                        document.getElementById(tempId).src = base64Flag + imageStr;
+                                 });
+                        })
+
+
+                })
+                
+                
+                
+            });
+        }).catch(err=>{
+            console.log('error', err)
+        });
+    })
+}
+
+</script>
+    
+       
+</html>

@@ -1,0 +1,64 @@
+<html>
+<link href="stylesheet.css" rel="stylesheet" type="text/css" media="all">    
+<title> Team Leaderboard </title>
+<h1> Team Leaderboard </h1>
+
+<table class="leaderboard" id="leaderboard" border="1" padding="5px" color="pink">
+    <tr>
+        <td> <h3> Team </h3></td>
+        <td> <h3> Score  </h3> </td>
+        
+    </tr>
+</table>
+<script src="https://statics.teams.microsoft.com/sdk/v1.0/js/MicrosoftTeams.min.js"></script>
+<script type="text/javascript">
+
+    //const msteams-client = require(msteams-client) 
+
+    microsoftTeams.initialize();
+    context = microsoftTeams.getContext(function (context) {
+        console.log(context);
+
+        var requestObject = {
+            "teamId": context.teamId,
+            "channelId": context.channelId,
+            "locale": context.locale,
+            "theme": context.theme,
+            "entityId": context.entityId,
+            "subEntityId": context.subEntityId,
+            "upn": context.upn,
+            "tid": context.teamId,
+            "groupId": context.groupId
+        }
+
+        // Loading the jQuery code
+        var url = 'https://msopenhack.azurewebsites.net/api/trivia/leaderboard/team';
+        fetch(url, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(requestObject)
+        })
+         .then(function (response) {
+            response.text().then(function (responseText) {
+                console.log(responseText);
+                
+                var responseObject = JSON.parse(responseText)
+                responseObject.forEach(x=>{
+                    var node = document.createElement("tr");
+                    node.innerHTML = "<tr> <td> " + x.name + " </td><td class='score' > " + x.score + "</td></tr>"
+                    document.getElementById("leaderboard").appendChild(node)
+                  
+                })
+                //alert("Done using Fetch!");
+                
+            });
+        }).catch(err=>{
+            console.log('error', err)
+        });
+    })
+
+</script>
+
+</html>

@@ -1,0 +1,27 @@
+.leaderboard{
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    margin: 15px;
+    font-family: futura;
+   
+}
+td{
+    padding: 8px;
+    align-content: center;
+
+  
+}
+.score {
+    text-align: center;
+}
+form {
+    font-size: 30px;
+   
+    color: #3E3C3C;
+    font-family: futura;
+
+}
+h1{
+    font-family: futura;
+}

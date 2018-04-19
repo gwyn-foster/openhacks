@@ -101,7 +101,6 @@ bot.on('conversationUpdate', (msg)=>{
         } else {
             console.log(info);
             //session.send('You said: %s', JSON.stringify(info));
-
             (async function() {
                 var format = {
                     "teamId": teamId,
@@ -117,10 +116,14 @@ bot.on('conversationUpdate', (msg)=>{
     })
 }
 })
-
 const server = restify.createServer();
-server.get(/\/public\/?.*/, restify.serveStatic({
-    directory: './public'
-}));
+server.get(
+    `/assets/*`,
+    restify.plugins.serveStatic({
+    directory: `${__dirname}/static`, // `${app_root}/static`,
+    appendRequestPath: false
+    })
+)
+
 server.post('/api/messages', connector.listen());
-server.listen(3333);
+server.listen(4333);

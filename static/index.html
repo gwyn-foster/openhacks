@@ -1,0 +1,95 @@
+<html>
+    <link href="stylesheet.css" rel="stylesheet" type="text/css" media="all">    
+    <body>
+    <form>
+      <input type="radio" name="tabtype" value="team" onclick="onClick()"> Team Stats<br>
+      <input type="radio" name="tabtype" value="ind" onclick="onClick()"> Individual Stats
+    </form>
+
+    <script src="https://statics.teams.microsoft.com/sdk/v1.0/js/MicrosoftTeams.min.js"></script>
+
+    <script type="text/javascript">
+
+    microsoftTeams.initialize();
+      console.log("red",microsoftTeams)
+    microsoftTeams.settings.registerOnSaveHandler(function(saveEvent){
+      console.log("red")
+        var radios = document.getElementsByName("tabtype");
+
+      console.log("green",radios, radios[0].checked)
+
+        if (radios[0].checked) {
+
+          console.log("purple")
+           microsoftTeams.settings.setSettings({
+             entityId: "team",
+             contentUrl: "https://hack021.ngrok.io/assets/team_leaderboard.html",
+             suggestedDisplayName: "Team Stats",
+             websiteUrl: "https://hack021.ngrok.io/assets/team_leaderboard.html",
+             //removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
+          });
+        } else {
+           microsoftTeams.settings.setSettings({
+             entityId: "ind",
+             contentUrl: "https://hack021.ngrok.io/assets/ind_leaderboard.html",
+             suggestedDisplayName: "Individual Stats",
+             websiteUrl: "https://hack021.ngrok.io/assets/ind_leaderboard.html",
+             //removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
+          });
+        }
+
+        saveEvent.notifySuccess();
+    });
+
+    function onClick() {
+      console.log("blue")
+        microsoftTeams.settings.setValidityState(true);
+    }
+
+    </script>
+    </body>
+</html>
+<!-- <html>
+  <body>
+  <form>
+    <input type="radio" name="maptype" value="bing" onclick="onClick()"> Bing Maps<br>
+    <input type="radio" name="maptype" value="google" onclick="onClick()"> Google Maps
+  </form> 
+  
+  <script src="https://statics.teams.microsoft.com/sdk/v1.0/js/MicrosoftTeams.min.js"></script>
+  
+  <script type="text/javascript">  
+  
+  microsoftTeams.initialize();
+  microsoftTeams.settings.registerOnSaveHandler(function(saveEvent){
+  
+      var radios = document.getElementsByName("maptype");
+      if (radios[0].checked) {
+         microsoftTeams.settings.setSettings({
+           entityId: "bing",
+           contentUrl: "https://www.bing.com/maps/embed",
+           suggestedDisplayName: "Bing Map",
+           websiteUrl: "https://www.bing.com/maps",
+           removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
+        });
+      } else {
+         microsoftTeams.settings.setSettings({
+           entityId: "google",
+           contentUrl: "https://www.google.com/maps/embed",
+           suggestedDisplayName: "Google Map",
+           websiteUrl: "https://www.google.com/maps",
+           removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
+        });
+      }
+  
+      saveEvent.notifySuccess();
+  });
+  
+  function onClick() {
+
+      microsoftTeams.settings.setValidityState(true);
+  }
+  
+  </script>
+  </body>
+  </html> -->
