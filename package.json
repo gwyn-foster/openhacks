@@ -12,6 +12,7 @@
     "async": "^2.6.0",
     "botbuilder": "^3.14.1",
     "botbuilder-teams": "^0.1.7",
+    "express": "^4.16.3",
     "lodash": "^4.17.5",
     "node-fetch": "^2.1.2",
     "restify": "^7.1.1"

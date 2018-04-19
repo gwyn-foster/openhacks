@@ -119,5 +119,8 @@ bot.on('conversationUpdate', (msg)=>{
 })
 
 const server = restify.createServer();
+server.get(/\/public\/?.*/, restify.serveStatic({
+    directory: './public'
+}));
 server.post('/api/messages', connector.listen());
 server.listen(3333);
