@@ -16,18 +16,18 @@
         if (radios[0].checked) {
            microsoftTeams.settings.setSettings({
              entityId: "team",
-             contentUrl: "https://www.bing.com/maps/embed",
+             contentUrl: "https://teamdreamtrivia.azurewebsites.net/team_leaderboard.html",
              suggestedDisplayName: "Team Stats",
-             websiteUrl: "https://www.bing.com/maps",
-             removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
+             websiteUrl: "https://bing.com",
+             //removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
           });
         } else {
            microsoftTeams.settings.setSettings({
              entityId: "ind",
-             contentUrl: "https://www.google.com/maps/embed",
+             contentUrl: "https://teamdreamtrivia.azurewebsites.net/ind_leaderboard.html",
              suggestedDisplayName: "Individual Stats",
-             websiteUrl: "https://www.google.com/maps",
-             removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
+             websiteUrl: "https://bing.com",
+             //removeUrl: "https://teams-get-started-sample.azurewebsites.net/tabremove.html",
           });
         }
     
