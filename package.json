@@ -10,11 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
+    "botauth": "^0.2.12",
     "botbuilder": "^3.14.1",
     "botbuilder-teams": "^0.1.7",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "lodash": "^4.17.5",
     "node-fetch": "^2.1.2",
+    "passport-azure-ad": "^3.0.12",
     "restify": "^7.1.1"
   }
 }
