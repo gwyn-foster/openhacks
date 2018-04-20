@@ -4,38 +4,47 @@ const restify = require('restify');
 const fetch = require('node-fetch');
 const async = require('async');
 const botauth = require("botauth");
-const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
-const expressSession = require('express-session');
 
-
-
-
-const WEBSITE_HOSTNAME = "WEBSITE_HOSTNAME";
-const PORT = 4333;
-const BOTAUTH_SECRET = "BOTAUTH_SECRET";
-const AZUREAD_APP_ID = "18934cc5-828f-4796-8a26-6aadceb6cc28";
-const AZUREAD_APP_PASSWORD = "hkpXUDG97$qagmLSM678;@!";
-const AZUREAD_APP_REALM = "common";
-
+var MicrosoftStrategy = require('passport-microsoft').Strategy;
 
 const connector = new teamsbuilder.TeamsChatConnector({
     appId: 'b6380be8-1cf0-4aff-8511-491e241616d7',
     appPassword: 'wsmmwKNLUG72]peAK230$%%'
 })
 
+const bot = new builder.UniversalBot(connector, [
+    (session) =>{
+        session.beginDialog('trivia')
+    }
+])
 
-const bot = new builder.UniversalBot(connector)
-
-bot.dialog("/", new builder.IntentDialog()
-    .matches(/logout/, "/logout")
-    .matches(/signin/, "/signin")
-    .matches(/trivia/, "/trivia")
-    .onDefault((session, args) => {
-        session.endDialog("welcome");
-    })
+auth.provider("microsoft",
+	function(options) {
+		return new MicrosoftStrategy({
+            clientID: 'applicationidfrommicrosoft',
+            clientSecret: 'applicationsecretfrommicrosoft',
+            callbackURL: "http://localhost:3000/auth/microsoft/callback"
+          },
+          function(accessToken, refreshToken, profile, done) {
+            
+            console.log(accessToken)
+            // User.findOrCreate({ userId: profile.id }, function (err, user) {
+            //   return done(err, user);
+            // });
+          }
+        )
+	}
 );
 
-bot.dialog('/trivia',[
+
+
+var auth = new botauth.BotAuthenticator(server, bot, {
+	secret : "something secret",
+	baseUrl : "https://" + WEBSITE_HOSTNAME }
+);
+
+
+bot.dialog('trivia',[
 
     (session, args) => {
 
@@ -137,91 +146,16 @@ bot.on('conversationUpdate', (msg)=>{
 })
 const server = restify.createServer();
 
-server.use(expressSession({ secret: BOTAUTH_SECRET, resave: true, saveUninitialized: false }));
+server.get('/auth/microsoft',
+passport.authenticate('microsoft'));
 
-
-var ba = new botauth.BotAuthenticator(server, bot, { session: true, baseUrl: `https://${WEBSITE_HOSTNAME}`, secret : BOTAUTH_SECRET, successRedirect: '/code' });
-
-ba.provider("aadv2", (options) => {
-    // Use the v2 endpoint (applications configured by apps.dev.microsoft.com)
-    // For passport-azure-ad v2.0.0, had to set realm = 'common' to ensure authbot works on azure app service
-    let oidStrategyv2 = {
-      redirectUrl: options.callbackURL, //  redirect: /botauth/aadv2/callback
-      realm: AZUREAD_APP_REALM,
-      clientID: AZUREAD_APP_ID,
-      clientSecret: AZUREAD_APP_PASSWORD,
-      identityMetadata: 'https://login.microsoftonline.com/' + AZUREAD_APP_REALM + '/v2.0/.well-known/openid-configuration',
-      skipUserProfile: false,
-      validateIssuer: false,
-      //allowHttpForRedirectUrl: true,
-      responseType: 'code',
-      responseMode: 'query',
-      scope: ['email', 'profile', 'offline_access', 'https://outlook.office.com/mail.read'],
-      passReqToCallback: true
-    };
-
-    let strategy = oidStrategyv2;
-
-    return new OIDCStrategy(strategy,
-        (req, iss, sub, profile, accessToken, refreshToken, done) => {
-          if (!profile.displayName) {
-            return done(new Error("No oid found"), null);
-          }
-          profile.accessToken = accessToken;
-          profile.refreshToken = refreshToken;
-          done(null, profile);
-    });
-});
-
-bot.dialog("/logout", (session) => {
-    ba.logout(session, "aadv2");
-    session.endDialog("logged_out");
-});
-
-bot.dialog("/signin", [].concat(
-    ba.authenticate("aadv2"),
-    (session, args, skip) => {
-        let user = ba.profile(session, "aadv2");
-        session.endDialog(user.displayName);
-        session.userData.accessToken = user.accessToken;
-        session.userData.refreshToken = user.refreshToken;
-        // session.beginDialog('workPrompt');
+server.get('/auth/microsoft/callback', 
+    passport.authenticate('microsoft', { failureRedirect: '/login' }),
+        function(req, res) {
+        // Successful authentication, redirect home. 
+        res.redirect('/');
     }
-));
-
-
-function getAccessTokenWithRefreshToken(refreshToken, callback){
-    var data = 'grant_type=refresh_token'
-          + '&refresh_token=' + refreshToken
-          + '&client_id=' + AZUREAD_APP_ID
-          + '&client_secret=' + encodeURIComponent(AZUREAD_APP_PASSWORD)
-  
-    var options = {
-        method: 'POST',
-        url: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-        body: data,
-        json: true,
-        headers: { 'Content-Type' : 'application/x-www-form-urlencoded' }
-    };
-  
-    request(options, function (err, res, body) {
-        if (err) return callback(err, body, res);
-        if (parseInt(res.statusCode / 100, 10) !== 2) {
-            if (body.error) {
-                return callback(new Error(res.statusCode + ': ' + (body.error.message || body.error)), body, res);
-            }
-            if (!body.access_token) {
-                return callback(new Error(res.statusCode + ': refreshToken error'), body, res);
-            }
-            return callback(null, body, res);
-        }
-        callback(null, {
-            accessToken: body.access_token,
-            refreshToken: body.refresh_token
-        }, res);
-    }); 
-  }
-  
+);
 
 server.get(
     `/assets/*`,
