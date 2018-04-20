@@ -92,6 +92,7 @@ bot.dialog('/trivia',[
                 });
                 let data = await response.json();
                 //session.send (JSON.stringify(data));
+                
 
                 if(data.correct === false){
 
@@ -101,6 +102,23 @@ bot.dialog('/trivia',[
                 }
                 else {
 
+                    // TODO: this is where we post to 
+/*
+POST https://graph.microsoft.com/v1.0/me/extensions
+Content-type: application/json
+{
+    "@odata.type":"microsoft.graph.openTypeExtension",
+    "extensionName":"com.msopenhack.trivia",
+    "badge": x.achievementBadge
+}
+
+POST TO TOPIC
+https://docs.microsoft.com/en-us/azure/event-grid/post-to-custom-topic
+
+https://<topic-endpoint>?api-version=2018-01-01 
+https://exampletopic.westus2-1.eventgrid.azure.net/api/events?api-version=2018-01-01 [{ "id": string, "eventType": string, "subject": string, "eventTime": string-in-date-time-format, "data":{ object-unique-to-each-publisher }, "dataVersion": string }]
+
+*/
                     session.send("You are right");
                 }
 
@@ -185,7 +203,7 @@ bot.dialog("/signin", [].concat(
         session.endDialog(user.displayName);
         session.userData.accessToken = user.accessToken;
         session.userData.refreshToken = user.refreshToken;
-        // session.beginDialog('workPrompt');
+        session.beginDialog('/trivia');
     }
 ));
 
